@@ -1,62 +1,99 @@
-# 🎮 GAMECHAMBER
+# 🌌 DreamExplorer
 
-**AI-Powered Game Generation Platform**
+**AI-generated immersive 3D emotional experiences**
 
-GAMECHAMBER is a production-ready web application that uses AI (Gemini and Claude APIs) to generate complete, playable games. Select from platformers, RPGs, or puzzle games, and watch as AI creates everything from game mechanics to code in real-time.
+DreamExplorer is a revolutionary platform that generates personalized 3D environments designed to evoke specific emotional states. Using AI to interpret emotional needs and procedural generation to create unique spaces, DreamExplorer helps users meditate, heal, explore, and feel.
 
-## ✨ Features
+## ✨ What is DreamExplorer?
 
-- 🤖 **Dual AI Support**: Integrates with both Gemini (primary) and Claude (fallback) APIs
-- 🎯 **Multiple Game Types**: Generate platformers, RPGs, and puzzle games
-- 📊 **Real-time Progress Tracking**: Live updates showing each generation stage
-- 🎨 **Beautiful UI**: Modern, responsive React interface with smooth animations
-- 💾 **Complete Game Downloads**: Get fully functional HTML5 games ready to play
-- ⚡ **Fast Generation**: Optimized async/await patterns for quick results
-- 🔒 **Secure API Handling**: Safe API key management with error handling
+DreamExplorer generates **dreams** - immersive first-person 3D experiences focused on emotion rather than gameplay. No objectives, no scores, no failure states. Just beautiful, atmospheric spaces to explore at your own pace.
+
+### Use Cases
+
+- 🧘 **Meditation & Mindfulness** - Calming spaces for meditation
+- 💚 **Mental Health** - Therapeutic visualizations for anxiety, grief, stress
+- 🎨 **Creative Inspiration** - Visualize abstract concepts, emotions, music
+- 💭 **Memory Preservation** - Recreate meaningful places from your past
+- 😴 **Sleep Aid** - Gentle experiences to help you fall asleep
+- 🌟 **Pure Exploration** - Discover fantastical worlds
+
+## 🎯 Core Philosophy
+
+> "We are not making games to win. We are making spaces to feel."
+
+- **AI describes emotion** → System generates environment
+- **No code generation** → AI outputs compact TOML definitions
+- **Procedural variety** → Infinite unique experiences
+- **User agency** → Explore freely, exit anytime
+- **Privacy-first** → Your dreams stay with you
+
+## 🛠️ Technology Stack
+
+### Core
+- **Three.js** - 3D rendering engine
+- **TOML** - Human-readable dream definitions
+- **TypeScript** - Type-safe development
+- **Vite** - Fast build system
+
+### Procedural Generation
+- **Simplex Noise** - Natural terrain generation
+- **L-Systems** - Recursive vegetation
+- **Marching Cubes** - Smooth organic terrain
+- **Poisson Sampling** - Natural object distribution
+
+### Audio
+- **Tone.js** - Procedural music & sound effects
+- **Web Audio API** - 3D spatial audio
+
+### Storage
+- **IndexedDB** (via localForage) - Save dreams locally
+
+## 📋 Features
+
+### Current (MVP - In Progress)
+- ⏳ Procedural 3D terrain generation
+- ⏳ First-person exploration controls
+- ⏳ Atmospheric effects (fog, lighting, particles)
+- ⏳ Procedural audio & spatial sound
+- ⏳ Save/load dream library
+- ⏳ Export dreams (TOML, HTML)
+- ⏳ 10+ example dream templates
+- ⏳ Mobile support
+
+### Planned (v2.0)
+- 🔮 AI-powered dream generation from natural language
+- 🔮 VR mode (WebXR)
+- 🔮 More biomes (desert, ocean, mountains, caves, space)
+- 🔮 Multiplayer dreams
+- 🔮 Cloud sync
+- 🔮 Guided meditations
+- 🔮 Therapist dashboard
 
 ## 🚀 Quick Start
 
-### Prerequisites
-
-- Node.js 16+ installed
-- Gemini API key and/or Claude API key
-
 ### Installation
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd GameChamber
-   ```
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/DreamExplorer.git
+cd DreamExplorer
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+# Install dependencies
+npm install
 
-3. **Configure environment variables**
-   ```bash
-   cp .env.example .env
-   ```
+# Start development server
+npm run dev
+```
 
-   Edit `.env` and add your API keys:
-   ```env
-   GEMINI_API_KEY=your_gemini_api_key
-   CLAUDE_API_KEY=your_claude_api_key  # Optional fallback
-   PORT=3001
-   ```
+Visit `http://localhost:5173` to start exploring dreams!
 
-4. **Start the application**
-   ```bash
-   npm run dev
-   ```
+### Build for Production
 
-   This will start:
-   - Backend server on `http://localhost:3001`
-   - Frontend dev server on `http://localhost:5173`
+```bash
+npm run build
+```
 
-5. **Open your browser**
-   Navigate to `http://localhost:5173`
+Output will be in `dist/` directory.
 
 ## 📖 Usage
 
