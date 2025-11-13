@@ -298,49 +298,67 @@ Format as JSON:
 }`;
 
     try {
-      const response = await this.callAI(prompt, { maxTokens: 2500 });
-      const jsonMatch = response.match(/\{[\s\S]*\}/);
+      const response = await this.callAI(prompt, { maxTokens: 2500 }, gameType);
+
+      // If response is null, use template
+      if (response === null) {
+        console.log('📦 Using cached template for assets');
+        const template = getTemplate(gameType);
+        // Templates don't have assets defined, so use default assets
+        return this.getDefaultAssets();
+      }
+
+      const jsonMatch = response?.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         return JSON.parse(jsonMatch[0]);
       }
 
-      // Fallback assets
-      return {
-        visual: {
-          sprites: [
-            { name: "player", description: "Main character sprite", size: "32x32" },
-            { name: "enemy", description: "Enemy sprite", size: "32x32" },
-            { name: "coin", description: "Collectible coin", size: "16x16" }
-          ],
-          backgrounds: [
-            { name: "level1-bg", description: "First level background" }
-          ],
-          ui: [
-            { name: "health-bar", purpose: "Display player health" },
-            { name: "score-display", purpose: "Show current score" }
-          ]
-        },
-        audio: {
-          music: [
-            { name: "main-theme", mood: "Upbeat and energetic", loop: true }
-          ],
-          sfx: [
-            { name: "jump", trigger: "Player jumps" },
-            { name: "collect", trigger: "Collect item" }
-          ]
-        },
-        fonts: [
-          { name: "game-font", usage: "UI and scores" }
-        ],
-        animations: [
-          { name: "player-walk", frames: 4, duration: "0.4s" },
-          { name: "player-jump", frames: 2, duration: "0.3s" }
-        ]
-      };
+      // Fallback to default assets
+      console.log('📦 Could not parse AI response, using default assets');
+      return this.getDefaultAssets();
     } catch (error) {
       console.error('Assets generation error:', error);
-      throw error;
+      console.log('📦 Error occurred, using default assets');
+      return this.getDefaultAssets();
     }
+  }
+
+  /**
+   * Get default assets (fallback)
+   */
+  getDefaultAssets() {
+    return {
+      visual: {
+        sprites: [
+          { name: "player", description: "Main character sprite", size: "32x32" },
+          { name: "enemy", description: "Enemy sprite", size: "32x32" },
+          { name: "coin", description: "Collectible coin", size: "16x16" }
+        ],
+        backgrounds: [
+          { name: "level1-bg", description: "First level background" }
+        ],
+        ui: [
+          { name: "health-bar", purpose: "Display player health" },
+          { name: "score-display", purpose: "Show current score" }
+        ]
+      },
+      audio: {
+        music: [
+          { name: "main-theme", mood: "Upbeat and energetic", loop: true }
+        ],
+        sfx: [
+          { name: "jump", trigger: "Player jumps" },
+          { name: "collect", trigger: "Collect item" }
+        ]
+      },
+      fonts: [
+        { name: "game-font", usage: "UI and scores" }
+      ],
+      animations: [
+        { name: "player-walk", frames: 4, duration: "0.4s" },
+        { name: "player-jump", frames: 2, duration: "0.3s" }
+      ]
+    };
   }
 
   /**
@@ -375,13 +393,26 @@ Provide the code in this JSON format:
 Make sure the game is fully functional and can run in a modern web browser.`;
 
     try {
-      const response = await this.callAI(prompt, { maxTokens: 4000, temperature: 0.8 });
-      const jsonMatch = response.match(/\{[\s\S]*\}/);
+      const response = await this.callAI(prompt, { maxTokens: 4000, temperature: 0.8 }, gameType);
+
+      // If response is null, use template
+      if (response === null) {
+        console.log('📦 Using cached template for code generation');
+        return {
+          html: this.getTemplateHTML(gameType),
+          css: this.getTemplateCSS(),
+          javascript: this.getTemplateJS(gameType),
+          instructions: "Open the HTML file in a modern web browser to play. Use arrow keys or WASD to move."
+        };
+      }
+
+      const jsonMatch = response?.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         return JSON.parse(jsonMatch[0]);
       }
 
       // Fallback code template
+      console.log('📦 Could not parse AI response, using cached template');
       return {
         html: this.getTemplateHTML(gameType),
         css: this.getTemplateCSS(),
@@ -390,6 +421,7 @@ Make sure the game is fully functional and can run in a modern web browser.`;
       };
     } catch (error) {
       console.error('Code generation error:', error);
+      console.log('📦 Error occurred, using cached template');
       // Return template on error
       return {
         html: this.getTemplateHTML(gameType),
