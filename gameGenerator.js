@@ -1,13 +1,16 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { getTemplate } from './templates/gameTemplates.js';
 
 /**
  * GameGenerator class - Orchestrates AI calls to generate complete games
- * Supports Gemini API (primary) and Claude API (fallback)
+ * Supports fallback chain: Gemini API (primary) -> Claude API (secondary) -> Cached Templates (fallback)
  */
 export class GameGenerator {
   constructor({ geminiApiKey, claudeApiKey }) {
     this.geminiApiKey = geminiApiKey;
     this.claudeApiKey = claudeApiKey;
+    this.usedFallback = false;
+    this.apiUsed = null;
 
     if (this.geminiApiKey) {
       this.genAI = new GoogleGenerativeAI(this.geminiApiKey);
@@ -81,29 +84,42 @@ export class GameGenerator {
   }
 
   /**
-   * Smart AI call - tries Gemini first, falls back to Claude
+   * Smart AI call - tries Gemini first, falls back to Claude, then to templates
+   * Fallback chain: Gemini -> Claude -> Cached Templates
    */
-  async callAI(prompt, options = {}) {
-    try {
-      if (this.geminiApiKey) {
-        return await this.callGemini(prompt, options);
-      } else if (this.claudeApiKey) {
-        return await this.callClaude(prompt, options);
-      } else {
-        throw new Error('No AI API configured');
+  async callAI(prompt, options = {}, gameType = null) {
+    // Try Gemini first
+    if (this.geminiApiKey) {
+      try {
+        console.log('🔵 Attempting Gemini API...');
+        const result = await this.callGemini(prompt, options);
+        this.apiUsed = 'gemini';
+        console.log('✅ Gemini API succeeded');
+        return result;
+      } catch (error) {
+        console.warn('⚠️  Gemini API failed:', error.message);
       }
-    } catch (error) {
-      // Try fallback if primary fails
-      if (this.geminiApiKey && this.claudeApiKey) {
-        console.log('Primary API failed, trying fallback...');
-        try {
-          return await this.callClaude(prompt, options);
-        } catch (fallbackError) {
-          throw new Error(`Both APIs failed: ${error.message}, ${fallbackError.message}`);
-        }
-      }
-      throw error;
     }
+
+    // Try Claude as secondary fallback
+    if (this.claudeApiKey) {
+      try {
+        console.log('🟣 Attempting Claude API...');
+        const result = await this.callClaude(prompt, options);
+        this.apiUsed = 'claude';
+        console.log('✅ Claude API succeeded');
+        return result;
+      } catch (error) {
+        console.warn('⚠️  Claude API failed:', error.message);
+      }
+    }
+
+    // Final fallback: Return null to trigger template usage
+    // The caller will handle template fallback
+    console.warn('⚠️  All AI APIs failed, caller will use cached templates');
+    this.usedFallback = true;
+    this.apiUsed = 'template';
+    return null;
   }
 
   /**
@@ -139,26 +155,30 @@ Format your response as JSON with the following structure:
 }`;
 
     try {
-      const response = await this.callAI(prompt);
+      const response = await this.callAI(prompt, {}, gameType);
+
+      // If response is null, all APIs failed - use template
+      if (response === null) {
+        console.log('📦 Using cached template for concept');
+        const template = getTemplate(gameType);
+        return template.concept;
+      }
+
       const jsonMatch = response.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         return JSON.parse(jsonMatch[0]);
       }
 
-      // Fallback if no JSON found
-      return {
-        overview: response.substring(0, 200),
-        theme: gameType,
-        setting: "Generated setting",
-        targetAudience: "Casual gamers",
-        uniqueSellingPoints: ["AI-generated", "Unique gameplay", "Engaging mechanics"],
-        visualStyle: "Modern and colorful",
-        audioStyle: "Dynamic and immersive",
-        keyFeatures: ["Core gameplay", "Progressive difficulty", "Achievements"]
-      };
+      // Fallback if no JSON found - use template
+      console.log('📦 Could not parse AI response, using cached template');
+      const template = getTemplate(gameType);
+      return template.concept;
     } catch (error) {
       console.error('Concept generation error:', error);
-      throw error;
+      // Final fallback to template
+      console.log('📦 Error occurred, using cached template');
+      const template = getTemplate(gameType);
+      return template.concept;
     }
   }
 
@@ -221,25 +241,29 @@ Format as JSON with appropriate structure.`
     const prompt = mechanicsPrompts[gameType] || mechanicsPrompts.platformer;
 
     try {
-      const response = await this.callAI(prompt, { maxTokens: 3000 });
+      const response = await this.callAI(prompt, { maxTokens: 3000 }, gameType);
+
+      // If response is null, use template
+      if (response === null) {
+        console.log('📦 Using cached template for mechanics');
+        const template = getTemplate(gameType);
+        return template.mechanics;
+      }
+
       const jsonMatch = response.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         return JSON.parse(jsonMatch[0]);
       }
 
-      // Fallback mechanics
-      return {
-        playerControls: { movement: "WASD/Arrow keys", jumping: "Space", abilities: ["Sprint", "Attack"] },
-        physics: { gravity: 9.8, jumpForce: 10, maxSpeed: 8 },
-        levelDesign: ["Progressive difficulty", "Hidden secrets", "Multiple paths"],
-        powerUps: [{ name: "Speed Boost", effect: "2x movement speed for 10s" }],
-        enemies: [{ type: "Basic Enemy", behavior: "Patrol pattern" }],
-        scoring: { basePoints: 100, multipliers: ["Time bonus", "No damage bonus"] },
-        difficulty: { progression: "Gradual increase", levels: 10 }
-      };
+      // Fallback to template
+      console.log('📦 Could not parse AI response, using cached template');
+      const template = getTemplate(gameType);
+      return template.mechanics;
     } catch (error) {
       console.error('Mechanics generation error:', error);
-      throw error;
+      console.log('📦 Error occurred, using cached template');
+      const template = getTemplate(gameType);
+      return template.mechanics;
     }
   }
 
