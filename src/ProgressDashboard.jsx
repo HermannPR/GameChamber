@@ -69,6 +69,18 @@ function ProgressDashboard({ jobStatus, isGenerating, onDownloadZip, onDownloadF
   const isCompleted = jobStatus.status === 'completed';
   const isFailed = jobStatus.status === 'failed';
 
+  // Helper function to safely format dates
+  const formatDate = (dateStr) => {
+    if (!dateStr) return 'N/A';
+    try {
+      const date = new Date(dateStr);
+      if (isNaN(date.getTime())) return 'Processing...';
+      return date.toLocaleTimeString();
+    } catch (e) {
+      return 'Processing...';
+    }
+  };
+
   return (
     <div className="progress-dashboard">
       <div className="dashboard-header">
@@ -78,7 +90,7 @@ function ProgressDashboard({ jobStatus, isGenerating, onDownloadZip, onDownloadF
            '⚡ Generating Your Game...'}
         </h2>
         <p className="game-name">
-          {jobStatus.gameName} ({jobStatus.gameType})
+          {jobStatus.gameName || 'Game'} ({jobStatus.gameType || 'Unknown'})
         </p>
       </div>
 
@@ -172,18 +184,18 @@ function ProgressDashboard({ jobStatus, isGenerating, onDownloadZip, onDownloadF
         <div className="stat-item">
           <span className="stat-label">Started:</span>
           <span className="stat-value">
-            {new Date(jobStatus.createdAt).toLocaleTimeString()}
+            {formatDate(jobStatus.createdAt)}
           </span>
         </div>
         <div className="stat-item">
           <span className="stat-label">Last Updated:</span>
           <span className="stat-value">
-            {new Date(jobStatus.updatedAt).toLocaleTimeString()}
+            {formatDate(jobStatus.updatedAt)}
           </span>
         </div>
         <div className="stat-item">
           <span className="stat-label">Job ID:</span>
-          <span className="stat-value code">{jobStatus.id.slice(0, 8)}...</span>
+          <span className="stat-value code">{jobStatus.id?.slice(0, 8) || 'Unknown'}...</span>
         </div>
       </div>
 
