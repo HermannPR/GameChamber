@@ -9,6 +9,7 @@ import { authenticateToken, optionalAuth, requireAdmin, rateLimiter } from './mi
 import { login, verifyToken, refreshToken, getCurrentUser, initializeDefaultAdmin } from './controllers/authController.js';
 import { JobQueue } from './services/jobQueue.js';
 import { streamGameZip, validateGameData } from './services/zipExporter.js';
+import { GameLibrary } from './services/gameLibrary.js';
 
 // Validate and get configuration
 const config = getConfig();
@@ -46,6 +47,12 @@ const jobs = new Map();
 const jobQueue = new JobQueue({
   maxConcurrent: config.MAX_CONCURRENT_JOBS,
   timeout: config.JOB_TIMEOUT
+});
+
+// Initialize game library
+const gameLibrary = new GameLibrary();
+gameLibrary.initialize().catch(err => {
+  console.error('Failed to initialize game library:', err);
 });
 
 // Initialize admin user
@@ -425,6 +432,254 @@ app.delete('/api/jobs/:jobId', authenticateToken, (req, res) => {
     console.error('Cancel job error:', error);
     res.status(500).json({
       error: 'Failed to cancel job',
+      details: error.message
+    });
+  }
+});
+
+// ============================================
+// Game Library Routes
+// ============================================
+
+/**
+ * POST /api/library/games
+ * Save a completed game to the library
+ */
+app.post('/api/library/games', optionalAuth, async (req, res) => {
+  try {
+    const { jobId } = req.body;
+
+    if (!jobId) {
+      return res.status(400).json({
+        error: 'Job ID is required'
+      });
+    }
+
+    // Get job data
+    if (!jobs.has(jobId)) {
+      return res.status(404).json({
+        error: 'Job not found'
+      });
+    }
+
+    const jobData = jobs.get(jobId);
+
+    if (jobData.status !== 'completed') {
+      return res.status(400).json({
+        error: 'Job not completed yet'
+      });
+    }
+
+    // Add to library
+    const userId = req.user?.username || 'anonymous';
+    const libraryEntry = await gameLibrary.addGame({
+      ...jobData.result,
+      jobId,
+      gameName: jobData.gameName,
+      gameType: jobData.gameType
+    }, userId);
+
+    res.json({
+      success: true,
+      game: libraryEntry,
+      message: 'Game added to library'
+    });
+  } catch (error) {
+    console.error('Save to library error:', error);
+    res.status(500).json({
+      error: 'Failed to save game to library',
+      details: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/library/games
+ * List games in library
+ */
+app.get('/api/library/games', optionalAuth, async (req, res) => {
+  try {
+    const {
+      type,
+      search,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
+      limit = 20,
+      offset = 0
+    } = req.query;
+
+    const userId = req.user?.username || null;
+
+    const result = await gameLibrary.listGames({
+      userId,
+      type,
+      search,
+      sortBy,
+      sortOrder,
+      limit: parseInt(limit),
+      offset: parseInt(offset)
+    });
+
+    res.json({
+      success: true,
+      ...result
+    });
+  } catch (error) {
+    console.error('List library error:', error);
+    res.status(500).json({
+      error: 'Failed to list games',
+      details: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/library/games/:id
+ * Get specific game metadata
+ */
+app.get('/api/library/games/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const game = await gameLibrary.getGame(id);
+
+    res.json({
+      success: true,
+      game
+    });
+  } catch (error) {
+    console.error('Get game error:', error);
+    res.status(404).json({
+      error: 'Game not found',
+      details: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/library/games/:id/play
+ * Get game HTML for playing
+ */
+app.get('/api/library/games/:id/play', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const html = await gameLibrary.getGameHTML(id);
+
+    // Set security headers
+    res.setHeader('Content-Type', 'text/html');
+    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+    res.setHeader('Content-Security-Policy',
+      "default-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
+      "frame-ancestors 'self'"
+    );
+
+    res.send(html);
+  } catch (error) {
+    console.error('Play game error:', error);
+    res.status(404).json({
+      error: 'Game not found',
+      details: error.message
+    });
+  }
+});
+
+/**
+ * PUT /api/library/games/:id
+ * Update game metadata
+ */
+app.put('/api/library/games/:id', optionalAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+
+    const game = await gameLibrary.updateGame(id, updates);
+
+    res.json({
+      success: true,
+      game,
+      message: 'Game updated successfully'
+    });
+  } catch (error) {
+    console.error('Update game error:', error);
+    res.status(500).json({
+      error: 'Failed to update game',
+      details: error.message
+    });
+  }
+});
+
+/**
+ * DELETE /api/library/games/:id
+ * Delete game from library
+ */
+app.delete('/api/library/games/:id', optionalAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await gameLibrary.deleteGame(id);
+
+    res.json({
+      success: true,
+      message: 'Game deleted from library'
+    });
+  } catch (error) {
+    console.error('Delete game error:', error);
+    res.status(500).json({
+      error: 'Failed to delete game',
+      details: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/library/stats
+ * Get library statistics
+ */
+app.get('/api/library/stats', optionalAuth, async (req, res) => {
+  try {
+    const userId = req.user?.username || null;
+
+    const stats = await gameLibrary.getStats(userId);
+
+    res.json({
+      success: true,
+      stats
+    });
+  } catch (error) {
+    console.error('Library stats error:', error);
+    res.status(500).json({
+      error: 'Failed to get library stats',
+      details: error.message
+    });
+  }
+});
+
+/**
+ * POST /api/library/games/:id/download
+ * Track download and return ZIP
+ */
+app.post('/api/library/games/:id/download', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const game = await gameLibrary.getGame(id);
+    await gameLibrary.incrementDownloads(id);
+
+    // Get the game HTML
+    const html = await gameLibrary.getGameHTML(id);
+
+    // Create a simple ZIP with the game
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', `attachment; filename="${game.title.replace(/[^a-z0-9]/gi, '_')}.zip"`);
+
+    // For now, just send the HTML file
+    // TODO: Create proper ZIP with assets
+    res.send(html);
+  } catch (error) {
+    console.error('Download library game error:', error);
+    res.status(500).json({
+      error: 'Failed to download game',
       details: error.message
     });
   }
