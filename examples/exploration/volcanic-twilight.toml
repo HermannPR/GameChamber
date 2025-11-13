@@ -1,0 +1,350 @@
+# Volcanic Twilight - Explore an alien volcanic landscape
+# Type: Exploration
+# Duration: Open-ended
+# Best for: Wonder, awe, exploration, creative inspiration
+
+[meta]
+type = "dream"
+title = "Volcanic Twilight"
+duration = 0  # Infinite - explore as long as you want
+description = "An otherworldly volcanic landscape at perpetual twilight"
+prompt = "Show me an alien volcanic world"
+
+[emotion]
+start = "curious"
+end = "awestruck"
+intensity = 0.8
+transition = "gradual"
+
+[world]
+type = "landscape"
+width = 500  # Large explorable area
+height = 150  # Tall volcanic peaks
+depth = 500
+scale = "vast"
+gravity = "low"  # 60% Earth gravity - lighter, dreamier movement
+boundaries = "infinite"  # Looping world
+backgroundColor = "#2a1a3a"  # Deep purple
+
+[world.terrain]
+type = "volcanic"
+seed = 777
+style = "surreal"  # Otherworldly, not realistic
+height_variation = 60.0  # Dramatic peaks and valleys
+frequency = 0.03  # Large geological features
+octaves = 5  # Lots of detail
+amplitude = 40.0
+
+# Volcanic features
+[[world.terrain.features]]
+type = "volcano"
+size = 80
+position = [-100, 0, -100]
+active = true  # Glowing lava
+eruption = false  # No actual eruption, just glow
+
+[[world.terrain.features]]
+type = "lava_river"
+length = 200
+width = 5
+position = [0, 0, 0]
+glow = true
+heat_distortion = true
+
+[[world.terrain.features]]
+type = "crystal_formation"
+size = 15
+count = 12
+distribution = "scattered"
+glow = true
+colors = ["#ff4444", "#ff8844", "#ffdd44"]  # Red to orange to yellow
+
+[[world.terrain.features]]
+type = "geysers"
+count = 8
+active_frequency = 30  # Erupt every 30 seconds
+sound = true
+particle_height = 20
+
+[atmosphere]
+time = "twilight"  # Perpetual twilight - purple/orange sky
+lighting = "dramatic"
+sun_intensity = 0.4  # Dim, setting sun
+ambient_intensity = 0.3  # Dark but visible
+
+# Volcanic fog/smoke
+[atmosphere.fog]
+enabled = true
+density = 0.3
+color = "#4a2a5a"  # Purple volcanic haze
+distance = 150
+
+# Dramatic volumetric god rays from setting sun
+[atmosphere.god_rays]
+enabled = true
+intensity = 0.7
+shafts = 30
+color = "#ff6633"  # Orange rays
+
+# Ash particles falling
+[[atmosphere.particles]]
+type = "ash"
+density = 0.6
+float = "falling_slow"
+color = "#888888"
+size = 0.05
+
+# Embers rising from lava
+[[atmosphere.particles]]
+type = "embers"
+count = 200
+pattern = "rising"
+glow = true
+color = "#ff4400"
+lifetime = 8000  # Live for 8 seconds
+
+# Alien spores glowing
+[[atmosphere.particles]]
+type = "spores"
+count = 100
+pattern = "floating"
+glow = true
+color = "#88ff88"  # Greenish glow
+pulsing = true
+
+# Dramatic alien sky
+[atmosphere.sky]
+type = "gradient"
+colors = ["#1a0a2a", "#4a2a5a", "#ff6633", "#ff3366"]  # Deep purple to fiery orange
+clouds = "dramatic"
+alien_features = true  # Multiple moons, nebulae
+
+[camera]
+start_position = [0.0, 2.0, 10.0]  # Start on a ridge overlooking the landscape
+start_rotation = [0.0, 0.0, 0.0]
+movement = "first_person"
+speed = 3.0  # Faster than meditation (this is exploration!)
+can_fly = false
+can_look_around = true
+
+# Wide field of view for epic vistas
+[[camera.effects]]
+type = "depth_of_field"
+focus_distance = 50
+blur = 0.3  # Cinematic depth
+
+[audio]
+spatial_audio = true
+reverb_type = "canyon"  # Large, echoey space
+reverb_intensity = 0.8
+
+# Dramatic environmental sounds
+[[audio.ambient]]
+type = "volcanic_rumble"
+volume = 0.4
+variation = "slow"
+bass_heavy = true
+
+[[audio.ambient]]
+type = "wind"
+volume = 0.5
+variation = "dramatic"
+howling = true
+
+[[audio.ambient]]
+type = "lava_flow"
+volume = 0.3
+position = [0.0, 0.0, 0.0]  # Near lava river
+spatial = true
+crackling = true
+
+[[audio.ambient]]
+type = "geysers"
+volume = 0.6
+triggered = true  # Only when geysers erupt
+spatial = true
+
+# Epic ambient music
+[audio.music]
+enabled = true
+style = "cinematic"
+tempo = 70  # Slow, grand
+key = "D_minor"  # Dark, mysterious
+instruments = ["orchestral_strings", "brass", "synth_pad", "drums"]
+intensity = 0.6  # Present but not overwhelming
+evolution = "medium"  # Builds and releases
+
+# Minimal vegetation - alien flora
+[[elements.vegetation]]
+type = "alien_plant"
+species = "crystal_tree"
+density = 0.1  # Sparse
+distribution = "scattered"
+variation = 0.8  # Very alien and varied
+count = 30
+glow = true
+glow_color = "#ff8844"
+
+[[elements.vegetation]]
+type = "alien_plant"
+species = "spore_mushroom"
+density = 0.15
+height = [1.0, 3.0]  # Large alien mushrooms
+glow = true
+glow_color = "#88ff88"
+pulsing = true
+
+# Lava elements
+[[elements.lava]]
+type = "lava_river"
+path = "procedural"
+width = 5.0
+flow_speed = 0.5
+glow_intensity = 1.0
+heat_distortion = true
+sound = true
+
+[[elements.lava]]
+type = "lava_pool"
+count = 8
+size_range = [3.0, 10.0]
+glow_intensity = 0.9
+bubbling = true
+particles = true  # Embers rising
+
+# Dramatic rock formations
+[[elements.structures]]
+type = "rock_arch"
+count = 3
+size_range = [20.0, 40.0]
+material = "black_volcanic_rock"
+glow_veins = true  # Glowing magma veins in the rock
+vein_color = "#ff4400"
+
+[[elements.structures]]
+type = "crystal_spire"
+count = 15
+height_range = [5.0, 25.0]
+material = "glowing_crystal"
+colors = ["#ff4444", "#ff8844", "#ffdd44"]
+pulsing_glow = true
+
+# Alien wildlife
+[[elements.wildlife]]
+type = "lava_lizard"
+count = 5
+behavior = "sunbathing_on_rocks"
+glow = true
+flee_distance = 10
+
+[[elements.wildlife]]
+type = "ash_bird"
+count = 8
+behavior = "soaring"
+trail_particles = true  # Leave ash trails
+calls = "occasional"
+
+[interaction]
+input_method = "first_person_controls"
+can_run = true  # Can run in exploration mode!
+can_interact = ["look", "approach", "observe"]
+
+# Approaching volcano
+[[interaction.moments]]
+trigger = "approach_volcano"
+effect = "rumble_intensifies"
+audio = "volcanic_sounds_louder"
+visual = "heat_distortion"
+feeling = "awe_and_danger"
+
+# Discovering crystal formation
+[[interaction.moments]]
+trigger = "approach_crystals"
+effect = "crystals_resonate"
+audio = "harmonic_tones"
+visual = "pulsing_glow_intensifies"
+feeling = "wonder"
+
+# Geyser eruption nearby
+[[interaction.moments]]
+trigger = "near_geyser_eruption"
+effect = "camera_shake_light"
+audio = "eruption_roar"
+visual = "steam_and_particles"
+feeling = "surprise"
+
+# Post-processing for dramatic effect
+[effects]
+
+# Dramatic color grading
+[effects.color_grading]
+saturation = 1.3  # Vivid colors
+temperature = "warm"  # Orange/red tint
+vibrance = 1.4  # Very vibrant
+tint = "#ff4422"  # Warm volcanic tint
+contrast = 1.2  # High contrast
+
+# Strong vignette
+[effects.vignette]
+intensity = 0.3
+color = "#1a0a2a"  # Deep purple
+
+# Strong bloom for glowing elements
+[effects.bloom]
+enabled = true
+threshold = 0.6
+intensity = 1.0  # Strong bloom
+
+# No film grain - keep it crisp and surreal
+[effects.film_grain]
+enabled = false
+
+# Dramatic dream effects
+[[effects.dream_effects]]
+type = "heat_distortion"
+intensity = 0.3
+near_lava = true
+
+[[effects.dream_effects]]
+type = "edge_glow"
+color = "#ff4400"
+intensity = 0.4
+
+[[effects.dream_effects]]
+type = "chromatic_aberration"
+intensity = 0.1  # Slight aberration for alien feel
+
+# Dynamic progression
+[progression]
+type = "cycle"  # Volcanic activity cycles
+
+# Increased volcanic activity
+[[progression.events]]
+time = 180  # 3 minutes in
+event = "volcanic_activity_increase"
+effect = { lava_glow = "brighter", rumble = "louder", ash = "heavier" }
+
+# Calm period
+[[progression.events]]
+time = 360  # 6 minutes in
+event = "volcanic_calm"
+effect = { music = "softer", fog = "clearing", ash = "lighter" }
+
+# Peak activity
+[[progression.events]]
+time = 540  # 9 minutes in
+event = "peak_activity"
+effect = { geysers = "all_erupt", music = "climax", glow = "maximum" }
+
+# Metadata
+[metadata]
+tags = ["volcanic", "alien", "exploration", "dramatic", "awe", "fantastical"]
+mood = ["awestruck", "adventurous", "curious", "wonder"]
+best_for = ["creative_inspiration", "exploration", "adventure", "epic_visuals"]
+intensity = "high"  # Visually intense
+duration_recommendation = "10-20 minutes"
+
+[metadata.accessibility]
+motion_sickness_risk = "medium"  # More dramatic movement and effects
+photosensitivity_warning = true  # Lots of glowing, pulsing lights
+requires_audio = false  # Stunning visually even without sound

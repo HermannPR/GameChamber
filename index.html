@@ -2,13 +2,136 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="GAMECHAMBER - AI-powered game generation platform using Gemini and Claude APIs" />
-    <title>GAMECHAMBER - AI Game Generator</title>
+    <meta name="description" content="DreamExplorer - AI-generated immersive 3D emotional experiences" />
+    <meta name="theme-color" content="#0a0a1a" />
+    <title>DreamExplorer - Immersive 3D Emotional Experiences</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+        color: #ffffff;
+        overflow: hidden;
+        width: 100vw;
+        height: 100vh;
+      }
+
+      #dream-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+        outline: none;
+      }
+
+      #loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        transition: opacity 0.5s ease;
+      }
+
+      #loading-screen.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .loader {
+        width: 50px;
+        height: 50px;
+        border: 3px solid rgba(255, 255, 255, 0.1);
+        border-top-color: #8aaaff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      .loading-text {
+        margin-top: 20px;
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      #ui-overlay {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        right: 20px;
+        pointer-events: none;
+        z-index: 100;
+      }
+
+      .dream-title {
+        font-size: 24px;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.9);
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        pointer-events: auto;
+      }
+
+      #instructions {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 14px;
+        pointer-events: none;
+        z-index: 100;
+      }
+
+      .key {
+        display: inline-block;
+        padding: 4px 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        margin: 0 2px;
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader"></div>
+      <div class="loading-text">Generating your dream...</div>
+    </div>
+
+    <!-- 3D Canvas -->
+    <canvas id="dream-canvas"></canvas>
+
+    <!-- UI Overlay -->
+    <div id="ui-overlay">
+      <div class="dream-title" id="dream-title">DreamExplorer</div>
+    </div>
+
+    <!-- Instructions -->
+    <div id="instructions">
+      <span class="key">WASD</span> Move &nbsp;
+      <span class="key">Mouse</span> Look &nbsp;
+      <span class="key">ESC</span> Menu
+    </div>
+
+    <!-- Main Application -->
+    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

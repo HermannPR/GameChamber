@@ -1,0 +1,262 @@
+# Forest Walk - A peaceful meditation space
+# Type: Meditation
+# Duration: ~5-10 minutes
+# Best for: Stress relief, grounding, peace
+
+[meta]
+type = "meditation"
+title = "Forest of Solitude"
+duration = 600  # 10 minutes recommended
+description = "A peaceful forest clearing where time stands still"
+prompt = "I need a calming forest space to clear my mind"
+
+[emotion]
+start = "stressed"
+end = "peaceful"
+intensity = 0.6
+transition = "gradual"
+
+[world]
+type = "landscape"
+width = 200  # 200 meters wide
+height = 50   # 50 meters tall
+depth = 200  # 200 meters deep
+scale = "intimate"
+gravity = "earth"
+boundaries = "soft"  # Gentle invisible walls
+backgroundColor = "#87CEEB"  # Sky blue
+
+[world.terrain]
+type = "forest"
+seed = 42
+style = "realistic"
+height_variation = 8.0  # Gentle hills
+frequency = 0.08
+octaves = 3
+amplitude = 5.0
+
+# Special terrain features
+[[world.terrain.features]]
+type = "clearing"
+size = 30
+position = "center"
+description = "A peaceful clearing in the center"
+
+[[world.terrain.features]]
+type = "stream"
+length = 80
+sound = true
+position = [20, 0, 0]
+description = "A gentle stream flowing through the forest"
+
+[atmosphere]
+time = "golden_hour"  # Warm, peaceful lighting
+lighting = "warm"
+sun_intensity = 0.7
+ambient_intensity = 0.5
+
+# Fog for atmosphere
+[atmosphere.fog]
+enabled = true
+density = 0.15  # Light fog
+color = "#d4a574"  # Warm golden fog
+distance = 100
+
+# Soft particles
+[[atmosphere.particles]]
+type = "dust_motes"
+density = 0.4
+float = "gentle"
+color = "#ffffff"
+
+[[atmosphere.particles]]
+type = "fireflies"
+count = 20
+pattern = "random"
+glow = true
+color = "#ffdd77"
+
+# Sky
+[atmosphere.sky]
+type = "gradient"
+colors = ["#87CEEB", "#FFD700", "#FFA07A"]  # Blue to golden to coral
+clouds = "soft"
+
+[camera]
+start_position = [0.0, 1.7, 5.0]  # Start at edge of clearing, eye level
+start_rotation = [0.0, 0.0, 0.0]  # Looking forward
+movement = "first_person"
+speed = 1.5  # Slow, meditative walking pace
+can_fly = false
+can_look_around = true
+
+# Subtle breathing effect
+[[camera.effects]]
+type = "breathing"
+intensity = 0.2  # Very subtle
+
+[audio]
+spatial_audio = true
+reverb_type = "forest"
+reverb_intensity = 0.5
+
+# Ambient nature sounds
+[[audio.ambient]]
+type = "wind"
+volume = 0.25
+variation = "gentle"
+
+[[audio.ambient]]
+type = "birds"
+volume = 0.3
+distance = "far"  # Distant bird songs
+
+[[audio.ambient]]
+type = "stream"
+volume = 0.4
+position = [20.0, 0.0, 0.0]  # Positioned at stream location
+spatial = true
+
+[[audio.ambient]]
+type = "leaves_rustling"
+volume = 0.2
+trigger = "wind_gust"
+
+# Minimal ambient music
+[audio.music]
+enabled = true
+style = "ambient"
+tempo = 55  # Very slow, calming
+key = "C_major"
+instruments = ["pad", "strings"]
+intensity = 0.25  # Very subtle
+evolution = "slow"
+
+# Vegetation
+[[elements.vegetation]]
+type = "tree"
+species = "oak"
+density = 0.35  # Medium forest density
+distribution = "clustered"  # Natural clusters
+variation = 0.5  # Good variety in trees
+count = 50
+
+[elements.vegetation.sway]
+enabled = true
+wind_responsive = true
+intensity = 0.3
+
+[[elements.vegetation]]
+type = "grass"
+density = 0.85  # Thick grass in clearing
+height = [0.2, 0.4]
+color_variation = 0.3
+wind_effect = "wave"
+
+[[elements.vegetation]]
+type = "flowers"
+species = "wildflowers"
+density = 0.2  # Scattered wildflowers
+colors = ["#FFB6C1", "#DDA0DD", "#F0E68C"]  # Pink, lavender, light yellow
+glow_at_dusk = false
+
+# Water stream
+[[elements.water]]
+type = "stream"
+path = "procedural"  # Follows natural terrain
+width = 1.5
+depth = 0.2
+clarity = 0.8  # Mostly clear water
+flow_speed = 0.3  # Gentle flow
+sound = true
+reflections = true
+
+# A place to rest
+[[elements.structures]]
+type = "old_bench"
+position = [0.0, 0.0, 0.0]  # Center of clearing
+material = "weathered_wood"
+story = "A quiet place someone used to come to think"
+interactive = true  # Can sit here
+
+# Peaceful wildlife
+[[elements.wildlife]]
+type = "deer"
+count = 2
+behavior = "grazing"
+flee_distance = 8  # Gentle, but will move away if approached
+animation = "procedural"
+
+[interaction]
+input_method = "first_person_controls"
+can_run = false  # Only walking - this is meditation
+can_interact = ["sit", "look", "listen"]
+
+# Special moment when approaching stream
+[[interaction.moments]]
+trigger = "approach_stream"
+effect = "camera_slows"
+audio = "water_becomes_prominent"
+feeling = "draw_attention"
+description = "The sound of water becomes clearer"
+
+# Special moment in clearing center
+[[interaction.moments]]
+trigger = "enter_clearing_center"
+effect = "music_swells"
+visual = "sun_breaks_through_slightly"
+feeling = "peace"
+description = "A moment of perfect stillness"
+
+# Post-processing effects
+[effects]
+
+# Warm color grading
+[effects.color_grading]
+saturation = 1.15  # Slightly more saturated
+temperature = "warm"
+vibrance = 1.1
+tint = "#FFE4B5"  # Slight golden tint
+
+# Subtle vignette
+[effects.vignette]
+intensity = 0.15
+color = "#4a3820"  # Warm dark brown
+
+# Soft bloom for dreamlike quality
+[effects.bloom]
+enabled = true
+threshold = 0.85
+intensity = 0.4
+
+# Subtle film grain
+[effects.film_grain]
+enabled = true
+intensity = 0.08  # Very subtle texture
+
+# Dream effects
+[[effects.dream_effects]]
+type = "subtle_distortion"
+intensity = 0.05  # Barely noticeable
+
+[[effects.dream_effects]]
+type = "edge_glow"
+color = "#ffffff"
+intensity = 0.1
+
+# How the experience evolves
+[progression]
+type = "static"  # Peaceful, unchanging - timeless quality
+
+# Metadata for cataloging
+[metadata]
+tags = ["peaceful", "nature", "meditation", "forest", "grounding"]
+mood = ["calm", "contemplative", "restorative"]
+best_for = ["stress_relief", "meditation", "grounding", "midday_break"]
+intensity = "low"  # Very gentle
+duration_recommendation = "5-15 minutes"
+
+[metadata.accessibility]
+motion_sickness_risk = "low"  # Gentle movement, stable horizon
+photosensitivity_warning = false
+requires_audio = false  # Beautiful with sound, but works silently too
