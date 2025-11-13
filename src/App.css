@@ -28,6 +28,42 @@
   font-weight: 500;
 }
 
+.header-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.library-link,
+.admin-link {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.library-link:hover,
+.admin-link:hover {
+  background: var(--primary-color-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.admin-link {
+  background: var(--secondary-color);
+}
+
+.admin-link:hover {
+  background: #5568d3;
+}
+
 .app-main {
   flex: 1;
   max-width: 1400px;

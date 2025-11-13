@@ -4,6 +4,7 @@ import { io } from 'socket.io-client';
 import GameCatalogue from './GameCatalogue';
 import ProgressDashboard from './ProgressDashboard';
 import AdminDashboard from './AdminDashboard';
+import GameLibrary from './GameLibrary';
 import './App.css';
 
 const API_BASE_URL = 'http://localhost:3001/api';
@@ -29,6 +30,7 @@ function App() {
     username: '',
     password: ''
   });
+  const [showLibrary, setShowLibrary] = useState(false);
 
   // WebSocket ref
   const socketRef = useRef(null);
@@ -242,6 +244,27 @@ function App() {
     });
   };
 
+  // Save to library
+  const handleSaveToLibrary = async () => {
+    if (!currentJobId) return;
+
+    try {
+      const headers = authToken ? { Authorization: `Bearer ${authToken}` } : {};
+
+      const response = await axios.post(
+        `${API_BASE_URL}/library/games`,
+        { jobId: currentJobId },
+        { headers }
+      );
+
+      if (response.data.success) {
+        alert('✅ Game saved to library!');
+      }
+    } catch (err) {
+      alert('Failed to save to library: ' + (err.response?.data?.error || err.message));
+    }
+  };
+
   // Reset generation
   const handleReset = () => {
     setCurrentJobId(null);
@@ -256,19 +279,32 @@ function App() {
     return <AdminDashboard token={authToken} onLogout={handleAdminLogout} />;
   }
 
+  // If showing library, render library view
+  if (showLibrary) {
+    return <GameLibrary token={authToken} onClose={() => setShowLibrary(false)} />;
+  }
+
   return (
     <div className="app">
       <header className="app-header">
         <h1>🎮 GAMECHAMBER v2.0</h1>
         <p className="tagline">AI-Powered Game Generation Platform</p>
-        {!isAdmin && (
+        <div className="header-buttons">
           <button
-            className="admin-link"
-            onClick={() => setShowAdminLogin(!showAdminLogin)}
+            className="library-link"
+            onClick={() => setShowLibrary(true)}
           >
-            {showAdminLogin ? 'Hide Admin Login' : 'Admin Login'}
+            📚 Library
           </button>
-        )}
+          {!isAdmin && (
+            <button
+              className="admin-link"
+              onClick={() => setShowAdminLogin(!showAdminLogin)}
+            >
+              {showAdminLogin ? 'Hide Admin Login' : 'Admin Login'}
+            </button>
+          )}
+        </div>
       </header>
 
       <main className="app-main">
@@ -425,6 +461,7 @@ function App() {
                 isGenerating={isGenerating}
                 onDownloadZip={handleDownloadZip}
                 onDownloadFiles={handleDownloadFiles}
+                onSaveToLibrary={handleSaveToLibrary}
                 onReset={handleReset}
               />
             )}
