@@ -1,39 +1,42 @@
 {
-  "name": "gamechamber",
-  "version": "1.0.0",
-  "description": "AI-powered game generation platform using Gemini and Claude APIs",
+  "name": "dreamexplorer",
+  "version": "0.1.0",
+  "description": "AI-generated immersive 3D emotional experiences",
   "type": "module",
-  "main": "server.js",
   "scripts": {
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "server": "node server.js",
-    "client": "vite",
-    "build": "vite build",
+    "dev": "vite",
+    "build": "tsc && vite build",
     "preview": "vite preview",
-    "start": "node server.js"
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css}\""
   },
   "keywords": [
-    "game-generation",
-    "ai",
-    "gemini",
-    "claude",
-    "game-development"
+    "3d",
+    "threejs",
+    "procedural-generation",
+    "meditation",
+    "mental-health",
+    "emotional-experiences",
+    "dreams"
   ],
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "axios": "^1.6.2",
-    "dotenv": "^16.3.1",
-    "cors": "^2.8.5",
-    "uuid": "^9.0.1",
-    "@google/generative-ai": "^0.2.0"
+    "three": "^0.160.0",
+    "@iarna/toml": "^2.2.5",
+    "localforage": "^1.10.0",
+    "simplex-noise": "^4.0.1",
+    "poisson-disk-sampling": "^2.0.0",
+    "tone": "^14.8.49"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.2.1",
-    "vite": "^5.0.8",
-    "concurrently": "^8.2.2"
+    "vite": "^5.0.0",
+    "typescript": "^5.3.0",
+    "@types/three": "^0.160.0",
+    "@types/node": "^20.0.0",
+    "eslint": "^8.56.0",
+    "prettier": "^3.1.0",
+    "@typescript-eslint/eslint-plugin": "^6.18.0",
+    "@typescript-eslint/parser": "^6.18.0"
   }
 }
