@@ -1,7 +1,7 @@
 import React from 'react';
 import './ProgressDashboard.css';
 
-function ProgressDashboard({ jobStatus, isGenerating, onDownload, onReset }) {
+function ProgressDashboard({ jobStatus, isGenerating, onDownloadZip, onDownloadFiles, onReset }) {
   if (!jobStatus && isGenerating) {
     return (
       <div className="progress-dashboard">
@@ -190,12 +190,20 @@ function ProgressDashboard({ jobStatus, isGenerating, onDownload, onReset }) {
       {/* Action Buttons */}
       <div className="action-buttons">
         {isCompleted && (
-          <button
-            className="btn btn-success btn-large"
-            onClick={onDownload}
-          >
-            📥 Download Game Files
-          </button>
+          <>
+            <button
+              className="btn btn-success btn-large"
+              onClick={onDownloadZip}
+            >
+              📦 Download as ZIP
+            </button>
+            <button
+              className="btn btn-primary"
+              onClick={onDownloadFiles}
+            >
+              📥 Download Individual Files
+            </button>
+          </>
         )}
 
         <button
